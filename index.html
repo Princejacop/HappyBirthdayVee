@@ -702,17 +702,10 @@
             width: 100%; aspect-ratio: 1; object-fit: cover;
             display: block; border-radius: 1px;
         }
-        .gallery-placeholder {
-            width: 100%; aspect-ratio: 1;
-            background: linear-gradient(135deg, #3a1020, #5a2035);
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center; gap: 8px;
-            border-radius: 1px;
-        }
-        .gallery-placeholder-icon { font-size: 2rem; opacity: .4; }
-        .gallery-placeholder-text {
-            font-family: var(--M); font-size: .5rem; letter-spacing: .25em;
-            text-transform: uppercase; color: var(--muted); text-align: center; padding: 0 8px;
+        .gallery-item video {
+            width: 100%; aspect-ratio: 1; object-fit: cover;
+            display: block; border-radius: 1px;
+            background: #3a1020;
         }
         .gallery-caption {
             position: absolute; bottom: 8px; left: 0; right: 0;
@@ -814,70 +807,6 @@
             color: var(--muted); opacity: 0.6; margin-top: 6px;
             animation: blink 1.5s step-end infinite;
         }
-
-        /* ─────────────────────────────────────────
-           GUESTBOOK
-        ───────────────────────────────────────── */
-        .guestbook-section {
-            max-width: 720px; margin: 0 auto 70px;
-            padding: 48px 40px;
-            background: var(--card-bg); border-radius: 24px;
-            border: 1px solid var(--card-border);
-            backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-            box-shadow: inset 0 1px 1px rgba(255,255,255,.12), 0 24px 60px -10px rgba(0,0,0,.6);
-        }
-        .guestbook-title {
-            font-family: var(--G); font-size: 3rem; font-weight: 400;
-            background: linear-gradient(135deg, var(--rose-bright) 0%, var(--champagne) 50%, var(--rose-gold) 100%);
-            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-            margin-bottom: 8px;
-        }
-        .guestbook-sub {
-            font-family: var(--M); font-size: .58rem; letter-spacing: .3em;
-            text-transform: uppercase; color: var(--muted); margin-bottom: 36px;
-        }
-        .guestbook-form { display: flex; flex-direction: column; gap: 16px; }
-        .gb-field {
-            display: flex; flex-direction: column; gap: 6px; text-align: left;
-        }
-        .gb-label {
-            font-family: var(--M); font-size: .55rem; letter-spacing: .3em;
-            text-transform: uppercase; color: var(--muted);
-        }
-        .gb-input, .gb-textarea {
-            background: rgba(255,255,255,.04);
-            border: 1px solid rgba(255,255,255,.1);
-            border-radius: 12px;
-            color: var(--ink); font-family: var(--L);
-            font-size: 1rem; font-style: italic;
-            padding: 14px 18px;
-            outline: none;
-            transition: border-color .3s ease, box-shadow .3s ease;
-            resize: none;
-        }
-        .gb-input:focus, .gb-textarea:focus {
-            border-color: rgba(194,81,110,.5);
-            box-shadow: 0 0 0 3px rgba(194,81,110,.1);
-        }
-        .gb-textarea { min-height: 110px; }
-        .gb-submit {
-            background: rgba(194,81,110,.1); border: 1px solid rgba(194,81,110,.4);
-            color: var(--rose-pale); font-family: var(--M); font-size: .68rem;
-            letter-spacing: .1em; padding: 1rem 2.4rem; border-radius: 50px;
-            cursor: none; transition: all .35s ease; align-self: flex-start;
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-        }
-        .gb-submit:hover {
-            background: rgba(194,81,110,.35); border-color: var(--rose-bright);
-            color: white; transform: translateY(-2px);
-            box-shadow: 0 8px 32px rgba(194,81,110,.35);
-        }
-        .gb-note {
-            font-family: var(--M); font-size: .54rem; letter-spacing: .15em;
-            color: var(--muted); margin-top: 8px;
-        }
-        .gb-note a { color: var(--rose-gold); text-decoration: none; }
-        .gb-note a:hover { text-decoration: underline; }
 
         /* ─────────────────────────────────────────
            CLOSING / FOOTER
@@ -1007,8 +936,7 @@
             .audio-title     { font-size: .54rem; letter-spacing: .2em; }
             .volume-slider   { width: 52px; }
             .time            { min-width: 28px; }
-            .reasons-section,
-            .guestbook-section { padding: 32px 20px; }
+            .reasons-section { padding: 32px 20px; }
             .age-clock-grid  { gap: 8px; }
             .age-val         { font-size: 2rem; min-width: 52px; }
         }
@@ -1031,7 +959,7 @@
             body { cursor: auto; }
             #cur, #cur-r { display: none; }
             .env-btn, #play-btn, #music-fab, .vol-icon, .seek-bar, .volume-slider,
-            .wish-card, .gallery-item, .gb-submit, .ee-close { cursor: auto; }
+            .wish-card, .gallery-item, .ee-close { cursor: auto; }
             .env-wrap { cursor: pointer; }
         }
     </style>
@@ -1172,8 +1100,8 @@
 
         <!-- Polaroid Video -->
         <div class="polaroid-frame reveal">
-            <video id="birthday-video" autoplay muted playsinline loop>
-                <source src="This_looks_great_already_one.mp4" type="video/mp4">
+            <video id="birthday-video" autoplay muted playsinline>
+                <source src="assets/birthday-video.mp4" type="video/mp4">
             </video>
             <span class="polaroid-caption">for you, Vee ♡</span>
         </div>
@@ -1201,7 +1129,7 @@
                 </div>
             </div>
             <audio id="bg-music" loop preload="metadata">
-                <source src="Christina_Perri_-_Thousand_years_(mp3.pm).mp3" type="audio/mpeg">
+                <source src="assets/thousand-years.mp3" type="audio/mpeg">
             </audio>
         </div>
 
@@ -1355,51 +1283,28 @@
         <div class="gallery-section reveal">
             <h2 class="gallery-title">Memory Wall</h2>
             <div class="gallery-grid" id="gallery-grid">
-                <!-- Placeholder cards — replace src with real photos -->
                 <div class="gallery-item">
-                    <div class="gallery-placeholder">
-                        <span class="gallery-placeholder-icon">📷</span>
-                        <span class="gallery-placeholder-text">Add your photo here</span>
-                    </div>
-                    <span class="gallery-caption">a favourite moment</span>
+                    <video class="gallery-video" src="assets/memory-1.mp4" muted loop playsinline preload="metadata"></video>
+                    <span class="gallery-caption">a favourite moment ♡</span>
                 </div>
                 <div class="gallery-item">
-                    <div class="gallery-placeholder">
-                        <span class="gallery-placeholder-icon">🌸</span>
-                        <span class="gallery-placeholder-text">Add your photo here</span>
-                    </div>
-                    <span class="gallery-caption">pure joy</span>
+                    <video class="gallery-video" src="assets/memory-2.mp4" muted loop playsinline preload="metadata"></video>
+                    <span class="gallery-caption">pure joy ♡</span>
                 </div>
                 <div class="gallery-item">
-                    <div class="gallery-placeholder">
-                        <span class="gallery-placeholder-icon">✨</span>
-                        <span class="gallery-placeholder-text">Add your photo here</span>
-                    </div>
-                    <span class="gallery-caption">golden hour</span>
+                    <video class="gallery-video" src="assets/memory-3.mp4" muted loop playsinline preload="metadata"></video>
+                    <span class="gallery-caption">golden hour ♡</span>
                 </div>
                 <div class="gallery-item">
-                    <div class="gallery-placeholder">
-                        <span class="gallery-placeholder-icon">♡</span>
-                        <span class="gallery-placeholder-text">Add your photo here</span>
-                    </div>
-                    <span class="gallery-caption">us</span>
+                    <video class="gallery-video" src="assets/memory-4.mp4" muted loop playsinline preload="metadata"></video>
+                    <span class="gallery-caption">Silly you ♡</span>
                 </div>
                 <div class="gallery-item">
-                    <div class="gallery-placeholder">
-                        <span class="gallery-placeholder-icon">🌹</span>
-                        <span class="gallery-placeholder-text">Add your photo here</span>
-                    </div>
-                    <span class="gallery-caption">unforgettable</span>
-                </div>
-                <div class="gallery-item">
-                    <div class="gallery-placeholder">
-                        <span class="gallery-placeholder-icon">🎂</span>
-                        <span class="gallery-placeholder-text">Add your photo here</span>
-                    </div>
-                    <span class="gallery-caption">celebrate you</span>
+                    <video class="gallery-video" src="assets/memory-5.mp4" muted loop playsinline preload="metadata"></video>
+                    <span class="gallery-caption">My princess ♡</span>
                 </div>
             </div>
-            <p class="gallery-note">· Add your own photos by replacing the placeholder cards ·</p>
+            <p class="gallery-note">· our favourite little moments ·</p>
         </div>
 
         <!-- Lace divider -->
@@ -1486,29 +1391,6 @@
             <span class="lace-icon" style="font-size:.65rem;color:var(--rose-deep)">♡</span>
             <span class="lace-icon">✦</span>
             <div class="lace-line"></div>
-        </div>
-
-        <!-- Guestbook -->
-        <div class="guestbook-section reveal">
-            <h2 class="guestbook-title">Leave a Wish</h2>
-            <p class="guestbook-sub">for the birthday girl · Vee</p>
-            <!-- Replace YOUR_FORM_ID with your Formspree form ID -->
-            <form class="guestbook-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
-                <div class="gb-field">
-                    <label class="gb-label" for="gb-name">Your name</label>
-                    <input class="gb-input" id="gb-name" name="name" type="text" placeholder="What do I call you?" required autocomplete="off">
-                </div>
-                <div class="gb-field">
-                    <label class="gb-label" for="gb-message">Your wish</label>
-                    <textarea class="gb-textarea" id="gb-message" name="message" placeholder="Write something beautiful for Vee…" required></textarea>
-                </div>
-                <input type="hidden" name="_subject" value="🎂 Birthday wish for Vee!">
-                <button type="submit" class="gb-submit">Send my wish →</button>
-                <p class="gb-note">
-                    Powered by <a href="https://formspree.io" target="_blank" rel="noopener">Formspree</a> —
-                    create a free account at formspree.io, create a form, and paste your form ID above.
-                </p>
-            </form>
         </div>
 
         <!-- Footer -->
@@ -2023,6 +1905,29 @@
     document.addEventListener('keydown', e => {
         if (e.key === 'Escape') closeEasterEgg();
     });
+
+    /* ═══════════════════════════════════════
+       BIRTHDAY VIDEO — pause when it ends
+    ═══════════════════════════════════════ */
+    const birthdayVideo = document.getElementById('birthday-video');
+    if (birthdayVideo) {
+        birthdayVideo.addEventListener('ended', () => birthdayVideo.pause());
+    }
+
+    /* ═══════════════════════════════════════
+       MEMORY WALL VIDEOS — play in view (muted), pause otherwise
+    ═══════════════════════════════════════ */
+    const memoryVideos = document.querySelectorAll('.gallery-video');
+    if (memoryVideos.length) {
+        const mediaObserver = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                const v = entry.target;
+                if (entry.isIntersecting) v.play().catch(() => {});
+                else v.pause();
+            });
+        }, { threshold: 0.3 });
+        memoryVideos.forEach(v => mediaObserver.observe(v));
+    }
 
     /* ═══════════════════════════════════════
        INIT
