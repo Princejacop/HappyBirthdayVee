@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Vee!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Great+Vibes:wght@400&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ─────────────────────────────────────────
+           RESET & TOKENS
+        ───────────────────────────────────────── */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --canvas:        #1a0a0f;
+            --canvas-mid:    #2d1018;
+            --surface:       rgba(255,220,225,0.06);
+            --card-bg:       rgba(255,230,235,0.08);
+            --card-border:   rgba(255,180,195,0.18);
+            --ink:           #fce8ec;
+            --ink-soft:      rgba(252,232,236,0.72);
+            --rose-gold:     #e8a87c;
+            --rose-bright:   #f5a0b8;
+            --rose-deep:     #c2516e;
+            --rose-pale:     #f9d1d9;
+            --gold:          #d4a96a;
+            --muted:         rgba(230,180,190,0.55);
+
+            --F: 'Playfair Display', Georgia, serif;
+            --S: 'Cormorant Garamond', Georgia, serif;
+            --G: 'Great Vibes', cursive;
+            --M: 'Poppins', sans-serif;
+
+            --ease:   cubic-bezier(0.76, 0, 0.24, 1);
+            --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--S);
+            background: var(--canvas);
+            color: var(--ink);
+            overflow-x: hidden;
+            cursor: none;
+            min-height: 100vh;
+        }
+
+        /* ─── AMBIENT BACKGROUND ─── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(ellipse 80% 60% at 20% 10%,  rgba(180,50,80,0.28)  0%, transparent 65%),
+                radial-gradient(ellipse 60% 50% at 80% 90%,  rgba(120,20,50,0.35)  0%, transparent 65%),
+                radial-gradient(ellipse 50% 40% at 55% 45%,  rgba(200,100,130,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse 100% 100% at 50% 50%, #2d1018 0%, #1a0a0f 100%);
+            animation: ambientPulse 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes ambientPulse {
+            0%   { opacity: 1; }
+            50%  { opacity: 0.85; }
+            100% { opacity: 1; }
+        }
+
+        /* ─── FILM GRAIN ─── */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 9000;
+            pointer-events: none;
+            opacity: 0.025;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)'/%3E%3C/svg%3E");
+        }
+
+        /* ─────────────────────────────────────────
+           STARFIELD CANVAS
+        ───────────────────────────────────────── */
+        #starfield {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* ─────────────────────────────────────────
+           FLOATING PETALS CANVAS
+        ───────────────────────────────────────── */
+        #petals {
+            position: fixed;
+            inset: 0;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* ─────────────────────────────────────────
+           CUSTOM CURSOR
+        ───────────────────────────────────────── */
+        #cur {
+            position: fixed;
+            z-index: 9999;
+            pointer-events: none;
+            width: 6px;
+            height: 6px;
+            background: var(--rose-bright);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 8px 2px rgba(245,160,184,0.7), 0 0 20px 4px rgba(245,160,184,0.3);
+            transition: width .18s, height .18s;
+        }
+        #cur-r {
+            position: fixed;
+            z-index: 9998;
+            pointer-events: none;
+            width: 36px;
+            height: 36px;
+            border: 1px solid rgba(245,160,184,0.4);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width .3s, height .3s, border-color .3s;
+        }
+        body.ch #cur   { width: 4px; height: 4px; }
+        body.ch #cur-r { width: 48px; height: 48px; border-color: var(--rose-bright); }
+
+        /* ─────────────────────────────────────────
+           STAGE 1 — ENVELOPE SCREEN
+        ───────────────────────────────────────── */
+        #envelope-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            transition: opacity .9s var(--ease) .1s;
+        }
+        #envelope-screen.out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .env-glow {
+            position: absolute;
+            width: 700px;
+            height: 700px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(194,81,110,.12) 0%, transparent 65%);
+            pointer-events: none;
+            animation: glowPulse 4s ease-in-out infinite alternate;
+        }
+        @keyframes glowPulse {
+            from { transform: scale(1);   opacity: 1; }
+            to   { transform: scale(1.1); opacity: 0.7; }
+        }
+
+        .env-label {
+            font-family: var(--M);
+            font-size: .58rem;
+            letter-spacing: .65em;
+            text-transform: uppercase;
+            color: var(--muted);
+            opacity: 0;
+            animation: up .9s ease .4s forwards;
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes up {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .env-wrap {
+            position: relative;
+            width: min(440px, 86vw);
+            cursor: none;
+            filter:
+                drop-shadow(0 48px 80px rgba(194,81,110,.45))
+                drop-shadow(0 0 60px rgba(212,165,116,.15));
+            transition: filter .5s ease, transform .5s ease;
+            opacity: 0;
+            animation: up 1s ease .7s forwards;
+            z-index: 2;
+        }
+        .env-wrap:hover {
+            transform: translateY(-6px) scale(1.01);
+            filter:
+                drop-shadow(0 60px 100px rgba(194,81,110,.6))
+                drop-shadow(0 0 80px rgba(212,165,116,.25));
+        }
+        svg.env-svg {
+            width: 100%;
+            overflow: visible;
+        }
+
+        /* flap */
+        .e-flap {
+            transform-origin: 220px 140px;
+        }
+        .env-wrap.open .e-flap {
+            animation: flap .68s cubic-bezier(.4,0,.2,1) forwards;
+        }
+        @keyframes flap {
+            to { transform: rotateX(180deg); }
+        }
+
+        /* letter rise */
+        .e-letter {
+            transform: translateY(0);
+            transition: transform .9s var(--spring) .38s;
+        }
+        .env-wrap.open .e-letter {
+            transform: translateY(-138px);
+        }
+
+        .env-rule {
+            width: 260px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, rgba(194,81,110,.4) 50%, transparent 100%);
+            opacity: 0;
+            animation: up 1.2s ease 1.1s forwards;
+            position: relative;
+            z-index: 2;
+        }
+
+        .env-btn {
+            background: none;
+            border: 1px solid rgba(194,81,110,.45);
+            color: var(--rose-pale);
+            font-family: var(--M);
+            font-size: .7rem;
+            letter-spacing: .08em;
+            padding: .9rem 2.4rem;
+            border-radius: 50px;
+            cursor: none;
+            transition: all .35s ease;
+            opacity: 0;
+            animation: up 1.4s ease 1.3s forwards;
+            position: relative;
+            z-index: 2;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            background: rgba(194,81,110,.1);
+        }
+        .env-btn:hover {
+            background: rgba(194,81,110,.35);
+            border-color: var(--rose-bright);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(194,81,110,.4), 0 0 0 1px rgba(245,160,184,.2);
+        }
+        .env-btn .arr {
+            margin-left: .5rem;
+            transition: transform .3s ease;
+            display: inline-block;
+        }
+        .env-btn:hover .arr {
+            transform: translateX(5px);
+        }
+
+        .env-date {
+            font-family: var(--M);
+            font-size: .58rem;
+            letter-spacing: .45em;
+            color: var(--muted);
+            opacity: 0;
+            animation: up 1.6s ease 1.5s forwards;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ─────────────────────────────────────────
+           STAGE 2 — MAIN CONTENT
+        ───────────────────────────────────────── */
+        #main-content {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1.5s var(--ease), transform 1.5s var(--ease);
+            display: none;
+            position: relative;
+            z-index: 10;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px 80px;
+            text-align: center;
+        }
+        #main-content.visible {
+            display: block !important;
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
+
+        /* ─── DECORATIVE LACE DIVIDER ─── */
+        .lace {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            justify-content: center;
+            margin: 20px auto;
+            opacity: 0.45;
+        }
+        .lace-line {
+            flex: 1;
+            max-width: 120px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--rose-deep), transparent);
+        }
+        .lace-icon { color: var(--rose-gold); font-size: 1rem; }
+
+        /* ─── VIDEO ─── */
+        .video-container {
+            width: 100%;
+            max-width: 88%;
+            margin: 0 auto 50px auto;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow:
+                0 0 0 1px rgba(194,81,110,.15),
+                0 20px 60px rgba(194,81,110,.35),
+                0 0 80px rgba(194,81,110,.1),
+                inset 0 0 0 1px rgba(255,255,255,.04);
+            opacity: 0;
+            transform: translateY(40px) scale(0.97);
+            animation: videoReveal 1.4s var(--ease) 0.3s forwards;
+            position: relative;
+        }
+        .video-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 20px;
+            border: 1px solid rgba(245,160,184,.15);
+            z-index: 1;
+            pointer-events: none;
+        }
+        video {
+            width: 100%;
+            display: block;
+        }
+
+        @keyframes videoReveal {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* ─────────────────────────────────────────
+           GREETING SECTION
+        ───────────────────────────────────────── */
+        .greeting-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 40px;
+            padding: 30px 20px 10px;
+        }
+
+        .happy-birthday {
+            font-family: var(--G);
+            font-size: 5rem;
+            color: var(--rose-bright);
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 2px solid var(--rose-bright);
+            width: 0;
+            animation: typing 3s steps(25, end) forwards, blink 0.75s step-end infinite;
+            margin-bottom: 12px;
+            text-shadow:
+                0 0 20px rgba(245,160,184,.5),
+                0 0 60px rgba(245,160,184,.2),
+                0 2px 4px rgba(0,0,0,.3);
+            filter: drop-shadow(0 0 12px rgba(245,160,184,0.4));
+        }
+
+        .vee-name {
+            font-family: var(--F);
+            font-weight: 500;
+            font-style: italic;
+            font-size: 7.5rem;
+            color: var(--rose-pale);
+            opacity: 0;
+            transform: translateY(40px) scale(0.85);
+            animation: swoopIn 1s var(--spring) 3s forwards;
+            text-shadow:
+                0 0 30px rgba(249,209,217,.4),
+                0 0 80px rgba(249,209,217,.15),
+                0 4px 8px rgba(0,0,0,.5);
+            letter-spacing: -0.02em;
+            line-height: 1;
+        }
+
+        /* ─────────────────────────────────────────
+           MESSAGE SECTION
+        ───────────────────────────────────────── */
+        .message-section {
+            padding: 40px 36px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            margin: 0 auto 50px;
+            max-width: 720px;
+            box-shadow:
+                0 0 0 1px rgba(255,255,255,.04),
+                0 24px 80px rgba(194,81,110,.2),
+                inset 0 1px 0 rgba(255,255,255,.06);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: slideUp 1s var(--ease) 1.2s forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* subtle inner glow corners */
+        .message-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 200px; height: 200px;
+            background: radial-gradient(circle, rgba(194,81,110,.12) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .message-section::after {
+            content: '';
+            position: absolute;
+            bottom: 0; right: 0;
+            width: 200px; height: 200px;
+            background: radial-gradient(circle, rgba(212,165,116,.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .message-section h2 {
+            font-family: var(--G);
+            color: var(--rose-gold);
+            margin-bottom: 28px;
+            font-size: 3.4rem;
+            font-weight: 400;
+            text-shadow: 0 0 20px rgba(232,168,124,.4), 0 2px 4px rgba(0,0,0,.4);
+            position: relative;
+            z-index: 1;
+        }
+        .message-section h2::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--rose-gold), transparent);
+            margin: 16px auto 0;
+            opacity: 0.6;
+        }
+
+        .message-section p {
+            line-height: 2;
+            color: rgba(252,232,236,0.88);
+            font-size: 1.25rem;
+            font-family: var(--S);
+            font-weight: 300;
+            font-style: italic;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ─── CLOSING SIGNATURE ─── */
+        .signature {
+            font-family: var(--G);
+            font-size: 2.8rem;
+            color: var(--rose-bright);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUp 1s var(--ease) 2s forwards;
+            text-shadow: 0 0 20px rgba(245,160,184,.4), 0 2px 4px rgba(0,0,0,.4);
+            margin-top: 10px;
+        }
+
+        /* ─── FLOATING HEARTS ROW ─── */
+        .hearts-row {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            font-size: 1.4rem;
+            opacity: 0;
+            animation: slideUp 1s var(--ease) 2.5s forwards;
+            margin-top: 30px;
+        }
+        .hearts-row span {
+            display: inline-block;
+            animation: heartBeat 2s ease-in-out infinite;
+            filter: drop-shadow(0 0 6px rgba(245,160,184,.6));
+        }
+        .hearts-row span:nth-child(2) { animation-delay: .3s; font-size: 1.8rem; }
+        .hearts-row span:nth-child(3) { animation-delay: .6s; font-size: 1.2rem; }
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            14%       { transform: scale(1.25); }
+            28%       { transform: scale(1); }
+            42%       { transform: scale(1.15); }
+            56%       { transform: scale(1); }
+        }
+
+        /* ─── AUDIO PLAYER ─── */
+        .audio-section {
+            padding: 26px 30px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            margin: 0 auto 50px;
+            max-width: 720px;
+            box-shadow:
+                0 0 0 1px rgba(255,255,255,.04),
+                0 24px 80px rgba(194,81,110,.2),
+                inset 0 1px 0 rgba(255,255,255,.06);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: slideUp 1s var(--ease) 0.8s forwards;
+        }
+
+        .audio-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: .8rem;
+            margin-bottom: 18px;
+        }
+        .audio-note {
+            color: var(--rose-gold);
+            font-size: 1.1rem;
+            filter: drop-shadow(0 0 8px rgba(212,165,116,.6));
+        }
+        .audio-title {
+            font-family: var(--M);
+            font-size: .68rem;
+            letter-spacing: .3em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+        .audio-title em {
+            font-style: normal;
+            color: var(--rose-bright);
+        }
+
+        .player {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        #play-btn {
+            flex-shrink: 0;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            border: 1px solid rgba(194,81,110,.5);
+            background: rgba(194,81,110,.18);
+            color: var(--rose-pale);
+            font-size: .95rem;
+            cursor: none;
+            transition: all .3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #play-btn:hover {
+            background: rgba(194,81,110,.4);
+            border-color: var(--rose-bright);
+            color: white;
+            box-shadow: 0 0 20px rgba(245,160,184,.35);
+            transform: scale(1.06);
+        }
+
+        .time {
+            font-family: var(--M);
+            font-size: .62rem;
+            letter-spacing: .08em;
+            color: var(--muted);
+            min-width: 34px;
+            text-align: center;
+        }
+
+        .seek-bar {
+            flex: 1;
+            height: 14px;
+            display: flex;
+            align-items: center;
+            cursor: none;
+            position: relative;
+        }
+        .seek-track {
+            position: relative;
+            width: 100%;
+            height: 3px;
+            border-radius: 3px;
+            background: rgba(245,160,184,.15);
+            overflow: visible;
+            transition: height .2s ease;
+        }
+        .seek-bar:hover .seek-track { height: 5px; }
+        .seek-fill {
+            position: absolute;
+            left: 0; top: 0;
+            height: 100%;
+            width: 0%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, var(--rose-deep), var(--rose-bright));
+            box-shadow: 0 0 10px rgba(245,160,184,.4);
+        }
+        .seek-dot {
+            position: absolute;
+            left: 0%;
+            top: 50%;
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: var(--rose-pale);
+            box-shadow: 0 0 8px rgba(245,160,184,.7);
+            transform: translate(-50%, -50%);
+            transition: transform .2s ease;
+        }
+        .seek-bar:hover .seek-dot { transform: translate(-50%, -50%) scale(1.25); }
+
+        .volume-wrap {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+        .vol-icon {
+            color: var(--muted);
+            font-size: .8rem;
+            cursor: none;
+            user-select: none;
+            transition: color .25s ease;
+        }
+        .vol-icon:hover { color: var(--rose-bright); }
+        .volume-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 74px;
+            height: 3px;
+            border-radius: 3px;
+            background: rgba(245,160,184,.15);
+            outline: none;
+            cursor: none;
+        }
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: var(--rose-pale);
+            box-shadow: 0 0 8px rgba(245,160,184,.7);
+            transition: transform .2s ease;
+        }
+        .volume-slider::-webkit-slider-thumb:hover { transform: scale(1.3); }
+        .volume-slider::-moz-range-thumb {
+            width: 11px;
+            height: 11px;
+            border: none;
+            border-radius: 50%;
+            background: var(--rose-pale);
+            box-shadow: 0 0 8px rgba(245,160,184,.7);
+        }
+        .volume-slider::-moz-range-track {
+            height: 3px;
+            border-radius: 3px;
+            background: rgba(245,160,184,.15);
+        }
+
+        /* little equalizer bars, only animate while playing */
+        .eq {
+            display: flex;
+            align-items: flex-end;
+            gap: 2.5px;
+            height: 12px;
+        }
+        .eq span {
+            width: 2.5px;
+            height: 4px;
+            border-radius: 2px;
+            background: var(--rose-bright);
+            opacity: .5;
+        }
+        .audio-section.playing .eq span {
+            animation: eqBounce .9s ease-in-out infinite;
+            opacity: 1;
+        }
+        .audio-section.playing .eq span:nth-child(2) { animation-delay: .15s; }
+        .audio-section.playing .eq span:nth-child(3) { animation-delay: .3s; }
+        @keyframes eqBounce {
+            0%, 100% { height: 4px; }
+            50%      { height: 12px; }
+        }
+
+        /* ─────────────────────────────────────────
+           ANIMATIONS
+        ───────────────────────────────────────── */
+        @keyframes typing {
+            from { width: 0; }
+            to   { width: 100%; }
+        }
+        @keyframes blink {
+            from, to { border-color: transparent; }
+            50%      { border-color: var(--rose-bright); }
+        }
+        @keyframes swoopIn {
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes slideUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ─────────────────────────────────────────
+           SCROLL-REVEAL (via JS IntersectionObserver)
+        ───────────────────────────────────────── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 1.1s var(--ease), transform 1.1s var(--ease);
+        }
+        .reveal.in-view {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ─────────────────────────────────────────
+           RESPONSIVE
+        ───────────────────────────────────────── */
+        @media (max-width: 768px) {
+            #main-content       { padding: 30px 12px 60px; }
+            .happy-birthday     { font-size: 3.5rem; }
+            .vee-name           { font-size: 5rem; }
+            .message-section    { padding: 28px 22px; }
+            .message-section h2 { font-size: 2.6rem; }
+            .message-section p  { font-size: 1.1rem; }
+            .video-container    { max-width: 96%; border-radius: 14px; }
+        }
+        @media (max-width: 620px) {
+            .audio-section      { padding: 20px 18px; }
+            .audio-title        { font-size: .56rem; letter-spacing: .2em; }
+            .volume-slider      { width: 52px; }
+            .time               { min-width: 30px; }
+        }
+        @media (max-width: 480px) {
+            .happy-birthday  { font-size: 2.6rem; }
+            .vee-name        { font-size: 3.6rem; }
+            .message-section h2 { font-size: 2rem; }
+            .message-section p  { font-size: 1rem; }
+            .env-wrap        { width: min(320px, 92vw); }
+        }
+        @media (max-width: 360px) {
+            .happy-birthday  { font-size: 2.2rem; }
+            .vee-name        { font-size: 3rem; }
+            .env-wrap        { width: min(280px, 95vw); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Starfield -->
+    <canvas id="starfield"></canvas>
+
+    <!-- Petals -->
+    <canvas id="petals"></canvas>
+
+    <!-- Custom Cursor -->
+    <div id="cur"></div>
+    <div id="cur-r"></div>
+
+    <!-- ══════════ ENVELOPE SCREEN ══════════ -->
+    <div id="envelope-screen">
+        <div class="env-glow"></div>
+        <p class="env-label">A · Special · Surprise</p>
+
+        <div class="env-wrap" id="envelope" onclick="openEnvelope()">
+            <svg class="env-svg" viewBox="0 0 440 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+                <!-- shadow -->
+                <ellipse cx="220" cy="296" rx="165" ry="5" fill="rgba(194,81,110,.5)"/>
+
+                <!-- back panel -->
+                <rect x="10" y="92" width="420" height="198" rx="3" fill="url(#envBack)"/>
+                <rect x="10" y="92" width="420" height="198" rx="3" stroke="rgba(194,81,110,.3)" stroke-width=".6"/>
+
+                <!-- letter -->
+                <g class="e-letter">
+                    <rect x="44" y="64" width="352" height="200" rx="3" fill="rgba(194,81,110,.2)"/>
+                    <rect x="42" y="62" width="352" height="200" rx="3" fill="url(#letterBg)"/>
+                    <!-- ruled lines -->
+                    <line x1="84" y1="112" x2="358" y2="112" stroke="rgba(252,232,236,.1)" stroke-width=".7"/>
+                    <line x1="84" y1="132" x2="358" y2="132" stroke="rgba(252,232,236,.1)" stroke-width=".7"/>
+                    <line x1="84" y1="152" x2="358" y2="152" stroke="rgba(252,232,236,.1)" stroke-width=".7"/>
+                    <line x1="84" y1="172" x2="318" y2="172" stroke="rgba(252,232,236,.1)" stroke-width=".7"/>
+                    <line x1="84" y1="192" x2="278" y2="192" stroke="rgba(252,232,236,.1)" stroke-width=".7"/>
+                    <!-- gold rule -->
+                    <line x1="84" y1="97" x2="356" y2="97" stroke="rgba(212,169,106,.3)" stroke-width=".6"/>
+                    <!-- heading -->
+                    <text x="218" y="88" text-anchor="middle"
+                        font-family="'Poppins',sans-serif" font-size="11"
+                        fill="rgba(212,169,106,.8)" letter-spacing="2.8">
+                        A SURPRISE FOR YOU, VEE
+                    </text>
+                    <!-- hearts -->
+                    <text x="66"  y="89" text-anchor="middle" font-family="serif" font-size="9" fill="rgba(245,160,184,.5)">♡</text>
+                    <text x="372" y="89" text-anchor="middle" font-family="serif" font-size="9" fill="rgba(245,160,184,.5)">♡</text>
+                </g>
+
+                <!-- front -->
+                <rect x="10" y="136" width="420" height="152" rx="3" fill="url(#envFront)"/>
+
+                <!-- side triangles -->
+                <polygon points="10,136 220,232 10,288"  fill="url(#triLeft)"/>
+                <polygon points="430,136 220,232 430,288" fill="url(#triRight)"/>
+                <polygon points="10,288 220,232 430,288 430,292 10,292" fill="url(#triBottom)"/>
+                <line x1="10" y1="288" x2="430" y2="288" stroke="rgba(245,160,184,.2)" stroke-width=".6"/>
+
+                <!-- flap -->
+                <g class="e-flap">
+                    <polygon points="10,140 220,236 430,140" fill="url(#flapGrad)"/>
+                    <line x1="10"  y1="140" x2="220" y2="236" stroke="rgba(255,255,255,.06)" stroke-width=".8"/>
+                    <line x1="430" y1="140" x2="220" y2="236" stroke="rgba(255,255,255,.06)" stroke-width=".8"/>
+                </g>
+
+                <!-- wax seal -->
+                <g class="e-seal">
+                    <circle cx="220" cy="222" r="30" fill="rgba(245,160,184,.08)"/>
+                    <circle cx="220" cy="222" r="24" fill="url(#sealOuter)"/>
+                    <circle cx="220" cy="222" r="21" fill="url(#sealInner)"/>
+                    <circle cx="220" cy="222" r="17.5" fill="none" stroke="rgba(255,244,241,.2)" stroke-width=".8"/>
+                    <text x="220" y="227" text-anchor="middle"
+                        font-family="'Great Vibes',cursive" font-size="13.5"
+                        fill="rgba(255,244,241,.92)">Vee</text>
+                </g>
+
+                <defs>
+                    <linearGradient id="envBack" x1="10" y1="92" x2="10" y2="290" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%"   stop-color="#4a1a28"/>
+                        <stop offset="100%" stop-color="#2d1018"/>
+                    </linearGradient>
+                    <linearGradient id="letterBg" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%"   stop-color="#2a0f1a"/>
+                        <stop offset="100%" stop-color="#1e0c13"/>
+                    </linearGradient>
+                    <linearGradient id="envFront" x1="10" y1="136" x2="10" y2="288" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%"   stop-color="#5a2035"/>
+                        <stop offset="100%" stop-color="#3d1525"/>
+                    </linearGradient>
+                    <linearGradient id="flapGrad" x1="220" y1="140" x2="220" y2="236" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%"   stop-color="#7a2a45"/>
+                        <stop offset="100%" stop-color="#4d1830"/>
+                    </linearGradient>
+                    <linearGradient id="triLeft" x1="10" y1="136" x2="220" y2="288" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%"   stop-color="#6a2a42"/>
+                        <stop offset="100%" stop-color="#3d1525"/>
+                    </linearGradient>
+                    <linearGradient id="triRight" x1="430" y1="136" x2="220" y2="288" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%"   stop-color="#7a3050"/>
+                        <stop offset="100%" stop-color="#3d1525"/>
+                    </linearGradient>
+                    <linearGradient id="triBottom" x1="220" y1="232" x2="220" y2="292" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%"   stop-color="#3d1525"/>
+                        <stop offset="100%" stop-color="#2d1018"/>
+                    </linearGradient>
+                    <radialGradient id="sealOuter" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%"   stop-color="#c2516e"/>
+                        <stop offset="100%" stop-color="#8a2a45"/>
+                    </radialGradient>
+                    <radialGradient id="sealInner" cx="38%" cy="35%" r="65%">
+                        <stop offset="0%"   stop-color="#d4a96a"/>
+                        <stop offset="100%" stop-color="#b07840"/>
+                    </radialGradient>
+                </defs>
+
+            </svg>
+        </div>
+
+        <div class="env-rule"></div>
+
+        <button class="env-btn" onclick="openEnvelope()">
+            Open the Envelope <span class="arr">→</span>
+        </button>
+        <p class="env-date">Happy 21st Birthday</p>
+    </div>
+
+    <!-- ══════════ MAIN CONTENT ══════════ -->
+    <div id="main-content">
+
+        <!-- Video -->
+        <div class="video-container">
+            <video id="birthday-video" autoplay muted playsinline>
+                <source src="This_looks_great_already_one.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
+        <!-- Audio Player -->
+        <div class="audio-section" id="audio-section">
+            <div class="audio-header">
+                <div class="eq"><span></span><span></span><span></span></div>
+                <p class="audio-title">A Thousand Years <em>· Christina Perri</em></p>
+                <div class="eq"><span></span><span></span><span></span></div>
+            </div>
+            <div class="player">
+                <button id="play-btn" aria-label="Play / Pause">▶</button>
+                <span class="time" id="current-time">0:00</span>
+                <div class="seek-bar" id="seek-bar">
+                    <div class="seek-track">
+                        <div class="seek-fill" id="seek-fill"></div>
+                        <div class="seek-dot" id="seek-dot"></div>
+                    </div>
+                </div>
+                <span class="time" id="duration">0:00</span>
+                <div class="volume-wrap">
+                    <span class="vol-icon" id="vol-icon" title="Mute">♪</span>
+                    <input type="range" class="volume-slider" id="volume" min="0" max="1" step="0.01" value="0.8">
+                </div>
+            </div>
+            <audio id="bg-music" loop preload="metadata">
+                <source src="Christina_Perri_-_Thousand_years_(mp3.pm).mp3" type="audio/mpeg">
+                Your browser does not support the audio tag.
+            </audio>
+        </div>
+
+        <!-- Lace divider -->
+        <div class="lace reveal">
+            <div class="lace-line"></div>
+            <span class="lace-icon">✦</span>
+            <span class="lace-icon" style="font-size:.7rem; color:var(--rose-deep)">♡</span>
+            <span class="lace-icon">✦</span>
+            <div class="lace-line"></div>
+        </div>
+
+        <!-- Greeting -->
+        <div class="greeting-section">
+            <h1 class="happy-birthday">Happy Birthday</h1>
+            <h1 class="vee-name">Vee</h1>
+        </div>
+
+        <!-- Lace divider -->
+        <div class="lace reveal">
+            <div class="lace-line"></div>
+            <span class="lace-icon">✦</span>
+            <span class="lace-icon" style="font-size:.7rem; color:var(--rose-deep)">♡</span>
+            <span class="lace-icon">✦</span>
+            <div class="lace-line"></div>
+        </div>
+
+        <!-- Message -->
+        <div class="message-section reveal">
+            <h2>Cheers to 21</h2>
+            <p>
+                Wishing you a day filled with sweetness, laughter, and all your favourite things.<br><br>
+                May this next chapter wrap you in warmth, bring you endless joy, and lead you toward every adventure your heart has dared to dream of.<br><br>
+                You deserve every beautiful thing the world has to offer.
+            </p>
+        </div>
+
+        <!-- Signature -->
+        <p class="signature">With love ♡</p>
+
+        <!-- Hearts row -->
+        <div class="hearts-row">
+            <span>♡</span>
+            <span>♥</span>
+            <span>♡</span>
+        </div>
+
+    </div>
+
+    <script>
+        /* ═══════════════════════════════════════
+           STARFIELD
+        ═══════════════════════════════════════ */
+        (function () {
+            const canvas = document.getElementById('starfield');
+            const ctx    = canvas.getContext('2d');
+            let W, H, stars = [];
+
+            function resize() {
+                W = canvas.width  = window.innerWidth;
+                H = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            function makeStars(n) {
+                stars = [];
+                for (let i = 0; i < n; i++) {
+                    stars.push({
+                        x:  Math.random() * W,
+                        y:  Math.random() * H,
+                        r:  Math.random() * 1.2 + 0.2,
+                        a:  Math.random(),
+                        da: (Math.random() * 0.004 + 0.001) * (Math.random() < .5 ? 1 : -1),
+                        hue: Math.random() < 0.3 ? 340 : Math.random() < 0.5 ? 30 : 0
+                    });
+                }
+            }
+            makeStars(160);
+
+            function drawStars() {
+                ctx.clearRect(0, 0, W, H);
+                for (const s of stars) {
+                    s.a += s.da;
+                    if (s.a > 1 || s.a < 0) s.da *= -1;
+
+                    const color = s.hue === 340
+                        ? `rgba(245,160,184,${s.a * .85})`
+                        : s.hue === 30
+                        ? `rgba(212,165,106,${s.a * .7})`
+                        : `rgba(249,232,236,${s.a * .6})`;
+
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                    ctx.fillStyle = color;
+                    ctx.fill();
+
+                    if (s.r > 0.9 && s.a > 0.6) {
+                        ctx.shadowBlur  = 8;
+                        ctx.shadowColor = color;
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+                    }
+                }
+                requestAnimationFrame(drawStars);
+            }
+            drawStars();
+        })();
+
+        /* ═══════════════════════════════════════
+           FLOATING PETALS / HEARTS
+        ═══════════════════════════════════════ */
+        (function () {
+            const canvas = document.getElementById('petals');
+            const ctx    = canvas.getContext('2d');
+            let W, H, particles = [];
+
+            function resize() {
+                W = canvas.width  = window.innerWidth;
+                H = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            const GLYPHS = ['♡', '✿', '·', '♡', '✦', '♡'];
+
+            function makeParticle() {
+                return {
+                    x:    Math.random() * W,
+                    y:    H + 20,
+                    size: Math.random() * 14 + 8,
+                    vx:   (Math.random() - 0.5) * 0.6,
+                    vy:   -(Math.random() * 0.8 + 0.3),
+                    a:    0,
+                    va:   Math.random() * 0.006 - 0.003,
+                    rot:  Math.random() * Math.PI * 2,
+                    vrot: (Math.random() - 0.5) * 0.02,
+                    alpha: Math.random() * 0.5 + 0.25,
+                    glyph: GLYPHS[Math.floor(Math.random() * GLYPHS.length)],
+                    color: Math.random() < 0.6
+                        ? `rgba(245,160,184,`
+                        : Math.random() < 0.5
+                        ? `rgba(212,165,106,`
+                        : `rgba(194,81,110,`
+                };
+            }
+
+            for (let i = 0; i < 18; i++) {
+                const p = makeParticle();
+                p.y = Math.random() * H;
+                particles.push(p);
+            }
+
+            function drawParticles() {
+                ctx.clearRect(0, 0, W, H);
+                if (Math.random() < 0.025) particles.push(makeParticle());
+                particles = particles.filter(p => p.y > -40 && p.alpha > 0.02);
+
+                for (const p of particles) {
+                    p.x   += p.vx;
+                    p.y   += p.vy;
+                    p.rot += p.vrot;
+                    p.alpha -= 0.00035;
+
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.rot);
+                    ctx.globalAlpha = Math.min(p.alpha, 0.65);
+                    ctx.font       = `${p.size}px serif`;
+                    ctx.fillStyle  = p.color + p.alpha + ')';
+                    ctx.textAlign  = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(p.glyph, 0, 0);
+                    ctx.restore();
+                }
+                requestAnimationFrame(drawParticles);
+            }
+            drawParticles();
+        })();
+
+        /* ═══════════════════════════════════════
+           CUSTOM CURSOR
+        ═══════════════════════════════════════ */
+        const cur  = document.getElementById('cur');
+        const curR = document.getElementById('cur-r');
+        let mx = 0, my = 0, rx = 0, ry = 0;
+
+        document.addEventListener('mousemove', e => {
+            mx = e.clientX;
+            my = e.clientY;
+            cur.style.left = mx + 'px';
+            cur.style.top  = my + 'px';
+        });
+
+        (function loop() {
+            rx += (mx - rx) * 0.12;
+            ry += (my - ry) * 0.12;
+            curR.style.left = rx + 'px';
+            curR.style.top  = ry + 'px';
+            requestAnimationFrame(loop);
+        })();
+
+        function bindCursorHover() {
+            document.querySelectorAll('button, [onclick], .env-wrap, .seek-bar, .volume-slider, .vol-icon').forEach(el => {
+                el.addEventListener('mouseenter', () => document.body.classList.add('ch'));
+                el.addEventListener('mouseleave', () => document.body.classList.remove('ch'));
+            });
+        }
+        bindCursorHover();
+
+        /* ═══════════════════════════════════════
+           MUSIC PLAYER
+        ═══════════════════════════════════════ */
+        const music    = document.getElementById('bg-music');
+        const playBtn  = document.getElementById('play-btn');
+        const seekBar  = document.getElementById('seek-bar');
+        const seekFill = document.getElementById('seek-fill');
+        const seekDot  = document.getElementById('seek-dot');
+        const curTime  = document.getElementById('current-time');
+        const durTime  = document.getElementById('duration');
+        const volIcon  = document.getElementById('vol-icon');
+        const volSlide = document.getElementById('volume');
+        const audioSec = document.getElementById('audio-section');
+
+        music.volume = parseFloat(volSlide.value);
+
+        function fmt(t) {
+            if (!isFinite(t)) return '0:00';
+            const m = Math.floor(t / 60);
+            const s = Math.floor(t % 60);
+            return m + ':' + String(s).padStart(2, '0');
+        }
+
+        function startMusic() {
+            const p = music.play();
+            if (p) p.catch(() => { /* blocked — Vee can press play herself */ });
+        }
+
+        function toggleMusic() {
+            if (music.paused) startMusic();
+            else music.pause();
+        }
+
+        playBtn.addEventListener('click', toggleMusic);
+
+        music.addEventListener('play', () => {
+            playBtn.textContent = '❚❚';
+            audioSec.classList.add('playing');
+        });
+        music.addEventListener('pause', () => {
+            playBtn.textContent = '▶';
+            audioSec.classList.remove('playing');
+        });
+        music.addEventListener('ended', () => {
+            playBtn.textContent = '▶';
+            audioSec.classList.remove('playing');
+        });
+
+        music.addEventListener('loadedmetadata', () => {
+            durTime.textContent = fmt(music.duration);
+        });
+        music.addEventListener('timeupdate', () => {
+            curTime.textContent = fmt(music.currentTime);
+            const pct = music.duration ? (music.currentTime / music.duration) * 100 : 0;
+            seekFill.style.width = pct + '%';
+            seekDot.style.left   = pct + '%';
+        });
+
+        function seek(e) {
+            const rect = seekBar.getBoundingClientRect();
+            const pct  = Math.min(Math.max((e.clientX - rect.left) / rect.width, 0), 1);
+            if (music.duration) music.currentTime = pct * music.duration;
+        }
+        seekBar.addEventListener('click', seek);
+
+        /* drag-to-seek */
+        let dragging = false;
+        seekBar.addEventListener('mousedown', () => { dragging = true; });
+        document.addEventListener('mouseup',   () => { dragging = false; });
+        document.addEventListener('mousemove', e => { if (dragging) seek(e); });
+
+        volSlide.addEventListener('input', () => {
+            music.volume = parseFloat(volSlide.value);
+            music.muted  = music.volume === 0;
+            volIcon.textContent = music.muted ? '✕' : '♪';
+        });
+        volIcon.addEventListener('click', () => {
+            music.muted = !music.muted;
+            volIcon.textContent = music.muted ? '✕' : '♪';
+        });
+
+        /* ═══════════════════════════════════════
+           ENVELOPE INTERACTION
+        ═══════════════════════════════════════ */
+        function openEnvelope() {
+            const envelope      = document.getElementById('envelope');
+            const envelopeScreen = document.getElementById('envelope-screen');
+            const mainContent   = document.getElementById('main-content');
+
+            envelope.classList.add('open');
+
+            /* The click is a user gesture, so the browser allows sound here */
+            startMusic();
+
+            setTimeout(() => {
+                envelopeScreen.classList.add('out');
+                setTimeout(() => {
+                    envelopeScreen.style.display = 'none';
+                    mainContent.classList.add('visible');
+                    initScrollReveal();
+                }, 900);
+            }, 800);
+        }
+
+        /* ═══════════════════════════════════════
+           SCROLL REVEAL
+        ═══════════════════════════════════════ */
+        function initScrollReveal() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('in-view');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15 });
+
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+
+        /* ═══════════════════════════════════════
+           INIT
+        ═══════════════════════════════════════ */
+        document.addEventListener('DOMContentLoaded', () => {
+            bindCursorHover();
+        });
+    </script>
+</body>
+</html>
